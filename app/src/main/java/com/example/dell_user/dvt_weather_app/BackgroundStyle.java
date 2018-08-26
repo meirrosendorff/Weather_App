@@ -79,6 +79,15 @@ public class BackgroundStyle {
         renderBG();
     }
 
+    public void setTheam(int theamID){
+
+        if (theamID == 0){
+            useSea();
+        }else{
+            useForest();
+        }
+    }
+
     /**
      * Function to check if we are using sea theam
      * @return true if we are currently using sea theam
@@ -147,7 +156,7 @@ public class BackgroundStyle {
      * used to get the image id of the current image in use
      * @return image id of current image
      */
-    private int getImageId(){
+    public int getImageId(){
         return bgImages[theam][weather];
     }
 
@@ -155,7 +164,7 @@ public class BackgroundStyle {
      * used to get the color that matches the current theam and scene
      * @return integer value of colour
      */
-    private int getColour(){
+    public int getColour(){
         int offset = 0;
         // checks if sea theam and sunny weather
         //if true we need to use one place forward in the array
