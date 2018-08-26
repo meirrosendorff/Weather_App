@@ -30,7 +30,7 @@ public class backgroundTheamUnitTest {
         testLayout = new View(RuntimeEnvironment.application);
         theam = new BackgroundStyle(testImageView, testLayout, 0, 0);
         theam.setSunny();
-        theam.setTheam(0);
+        theam.setTheam(1);
 
 
         assertEquals(R.drawable.sea_sunny, theam.getImageId());
@@ -47,7 +47,7 @@ public class backgroundTheamUnitTest {
         testImageView = new ImageView(RuntimeEnvironment.application);
         testLayout = new View(RuntimeEnvironment.application);
         theam = new BackgroundStyle(testImageView, testLayout, 0, 0);
-        theam.setTheam(0);
+        theam.setTheam(1);
         theam.setSunny();
 
         assertEquals(R.drawable.sea_sunny, theam.getImageId());
@@ -59,13 +59,13 @@ public class backgroundTheamUnitTest {
      * asserts that the correct image background colour is set
      */
     @Test
-    public void getImageID_ChangeWeatherAndThenTheam_CorrectColour(){
+    public void getColour_ChangeWeatherAndThenTheam_CorrectColour(){
 
         testImageView = new ImageView(RuntimeEnvironment.application);
         testLayout = new View(RuntimeEnvironment.application);
         theam = new BackgroundStyle(testImageView, testLayout, 0, 0);
         theam.setSunny();
-        theam.setTheam(0);
+        theam.setTheam(1);
 
 
         assertEquals(Color.parseColor("#4A90E2"),theam.getColour() );
@@ -77,14 +77,14 @@ public class backgroundTheamUnitTest {
      * And asserts that the correct colour is being set.
      */
     @Test
-    public void getImageID_ChangeWeatherAndThenTheamTwice_CorrectColour() {
+    public void getColour_ChangeWeatherAndThenTheamTwice_CorrectColour() {
 
         testImageView = new ImageView(RuntimeEnvironment.application);
         testLayout = new View(RuntimeEnvironment.application);
         theam = new BackgroundStyle(testImageView, testLayout, 0, 0);
         theam.setSunny();
-        theam.setTheam(0);
         theam.setTheam(1);
+        theam.setTheam(0);
 
 
         assertEquals(Color.parseColor("#47AB2F"), theam.getColour());

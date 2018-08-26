@@ -26,6 +26,9 @@ public class BackgroundStyle {
     // colours are stored adjacent to their relative backgrounds
     private String[] colours;
 
+    //Contains Theame names
+    private String[] theamNames;
+
     //This offset is used in the colours array
     //as the colour for sunny is different for sea and forrest
     private final int sunnyOffSet;
@@ -53,8 +56,11 @@ public class BackgroundStyle {
      */
     public BackgroundStyle(ImageView bgImageView, View layout, int theam, int weather){
 
+        theamNames = new String[]{"Forest", "Beach"};
+
         bgImages = new int[][]{{R.drawable.forest_cloudy, R.drawable.forest_rainy, R.drawable.forest_sunny},
                 {R.drawable.sea_cloudy, R.drawable.sea_rainy, R.drawable.sea_sunny}};
+
         //position of each type in the array
         forrest = 0;
         sea = 1;
@@ -82,9 +88,9 @@ public class BackgroundStyle {
     public void setTheam(int theamID){
 
         if (theamID == 0){
-            useSea();
-        }else{
             useForest();
+        }else{
+            useSea();
         }
     }
 
@@ -183,4 +189,19 @@ public class BackgroundStyle {
         layout.setBackgroundColor(getColour());
     }
 
+    /**
+     * used to get the theam names
+     * @return an array with theam names
+     */
+    public String[] getTheamNames() {
+        return theamNames;
+    }
+
+    /**
+     * used to get the number of theams
+     * @return the number of theams
+     */
+    public int getNumTheams(){
+        return theamNames.length;
+    }
 }

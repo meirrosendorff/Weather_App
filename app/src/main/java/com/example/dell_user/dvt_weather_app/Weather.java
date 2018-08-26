@@ -1,11 +1,12 @@
 package com.example.dell_user.dvt_weather_app;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 
+import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 public class Weather extends AppCompatActivity {
 
@@ -19,49 +20,38 @@ public class Weather extends AppCompatActivity {
 
         localBackground = new BackgroundStyle((ImageView) findViewById(R.id.screenBackground), findViewById(R.id.layout), 0, 0);
 
-        setChangeStyleButtonListener();
-        setChangeWeatherButtonListener();
-
+        createLayout();
 
     }
 
-    private void setChangeStyleButtonListener() {
-        final Button rotatebutton = (Button) findViewById(R.id.btnChangeStyle);
-        rotatebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
 
-                if (!swap){
-                    localBackground.useForest();
-                }else{
-                    localBackground.useSea();
-                }
 
-                swap = !swap;
 
+    public void createLayout(){
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.futurePredictionsLinearLayout) ;
+
+        dayForcast[] nextWeek = new dayForcast[20];
+
+        for (int i = 0; i<20; i++){
+            nextWeek[i] = new dayForcast((ConstraintLayout) inflater.inflate(R.layout.template, mainLayout, false));
+            mainLayout.addView(nextWeek[i].getLayout());
+
+            nextWeek[i].setTemperature(i);
+            nextWeek[i].setDay(i%7);
+
+            if(i%3 == 0){
+                nextWeek[i].setCloudy();
+            }else if(i%3 == 1){
+                nextWeek[i].setRainy();
+            }else{
+                nextWeek[i].setSunny();
             }
-        });
+
+
+        }
     }
-
-    int rotation = 0;
-    private void setChangeWeatherButtonListener() {
-        final Button rotatebutton = (Button) findViewById(R.id.btnChangeWeather);
-        rotatebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-
-                switch(rotation){
-                    case 0: localBackground.setCloudy(); break;
-                    case 1: localBackground.setRainy(); break;
-                    case 2: localBackground.setSunny(); break;
-                }
-
-                rotation = (rotation + 1)%3;
-
-
-            }
-        });
-    }
-
 
 }
