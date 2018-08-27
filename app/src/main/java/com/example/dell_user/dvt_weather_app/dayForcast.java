@@ -32,13 +32,13 @@ public class dayForcast {
     private int[] symbolSet;
 
     //The apss context
-    Context context;
+    private Context context;
 
     //File that contains dayNames
-    int dayNamesFileID;
+    private int dayNamesFileID;
 
     //File that contains symbol image details
-    int symbolsFileID;
+    private int symbolsFileID;
 
     /**
      * Constructor fo rthe class

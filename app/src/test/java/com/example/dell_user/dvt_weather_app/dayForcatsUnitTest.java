@@ -67,7 +67,7 @@ public class dayForcatsUnitTest {
         dayForcast myForcast = new dayForcast(RuntimeEnvironment.application, myView);
 
         myForcast.setWeather(2);
-        
+
         assertEquals(R.drawable.clear3x, myForcast.getSymbolTag());
 
     }
