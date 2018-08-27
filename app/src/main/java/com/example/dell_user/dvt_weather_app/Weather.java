@@ -18,13 +18,14 @@ public class Weather extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        localBackground = new BackgroundStyle((ImageView) findViewById(R.id.screenBackground), findViewById(R.id.layout), 0, 0);
+//        String theams = readFileToString(R.raw.theams);
+
+        localBackground = new BackgroundStyle(this, (ImageView) findViewById(R.id.screenBackground), findViewById(R.id.layout));
 
         createLayout();
 
+
     }
-
-
 
 
     public void createLayout(){

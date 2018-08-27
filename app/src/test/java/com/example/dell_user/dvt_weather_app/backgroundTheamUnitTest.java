@@ -28,10 +28,9 @@ public class backgroundTheamUnitTest {
 
         testImageView = new ImageView(RuntimeEnvironment.application);
         testLayout = new View(RuntimeEnvironment.application);
-        theam = new BackgroundStyle(testImageView, testLayout, 0, 0);
-        theam.setSunny();
+        theam = new BackgroundStyle(RuntimeEnvironment.application, testImageView, testLayout);
+        theam.setWeather(2);
         theam.setTheam(1);
-
 
         assertEquals(R.drawable.sea_sunny, theam.getImageId());
 
@@ -46,9 +45,9 @@ public class backgroundTheamUnitTest {
 
         testImageView = new ImageView(RuntimeEnvironment.application);
         testLayout = new View(RuntimeEnvironment.application);
-        theam = new BackgroundStyle(testImageView, testLayout, 0, 0);
+        theam = new BackgroundStyle(RuntimeEnvironment.application, testImageView, testLayout);
         theam.setTheam(1);
-        theam.setSunny();
+        theam.setWeather(2);
 
         assertEquals(R.drawable.sea_sunny, theam.getImageId());
 
@@ -63,8 +62,8 @@ public class backgroundTheamUnitTest {
 
         testImageView = new ImageView(RuntimeEnvironment.application);
         testLayout = new View(RuntimeEnvironment.application);
-        theam = new BackgroundStyle(testImageView, testLayout, 0, 0);
-        theam.setSunny();
+        theam = new BackgroundStyle(RuntimeEnvironment.application, testImageView, testLayout);
+        theam.setWeather(2);
         theam.setTheam(1);
 
 
@@ -81,8 +80,8 @@ public class backgroundTheamUnitTest {
 
         testImageView = new ImageView(RuntimeEnvironment.application);
         testLayout = new View(RuntimeEnvironment.application);
-        theam = new BackgroundStyle(testImageView, testLayout, 0, 0);
-        theam.setSunny();
+        theam = new BackgroundStyle(RuntimeEnvironment.application, testImageView, testLayout);
+        theam.setWeather(2);
         theam.setTheam(1);
         theam.setTheam(0);
 

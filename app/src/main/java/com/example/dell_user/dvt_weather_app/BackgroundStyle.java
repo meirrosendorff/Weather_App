@@ -1,8 +1,10 @@
 package com.example.dell_user.dvt_weather_app;
 
-import android.graphics.Color;
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
+
+import java.util.ArrayList;
 
 /**
  * This class allows a simplified interface for changing
@@ -12,26 +14,14 @@ public class BackgroundStyle {
 
     //Denotes the current theam
     //0 is forest, 1 is sea
-    private int theam;
+    private int currTheam;
 
     //denotes the currengt weather type
     //0 = cloudy, 1 = rainy, 2 = sunny
     private int weather;
 
-    //contains the image ids of all images
-    //bgImages[0] is the forest images, bgImages[1] is the sea images
-    private int[][] bgImages;
-
-    //Contains all colours for backgrounds,
-    // colours are stored adjacent to their relative backgrounds
-    private String[] colours;
-
     //Contains Theame names
     private String[] theamNames;
-
-    //This offset is used in the colours array
-    //as the colour for sunny is different for sea and forrest
-    private final int sunnyOffSet;
 
     //The imageView for the main image on the app
     private ImageView bgImageView;
@@ -39,131 +29,67 @@ public class BackgroundStyle {
     //The layout for the main page on the app
     private View layout;
 
-    //position of each type in the array
-    private final int forrest;
-    private final int sea;
-    private final int cloudy;
-    private final int rainy;
-    private final int sunny;
+    //The context of the app
+    Context context;
 
+    //Array contain all theam objects
+    Theam[] theams;
+
+    //Id of the file being used to read theam from.
+    private int theamFileID;
 
     /**
      * The constructor for our class
      * @param bgImageView The imageView for the main image on the app
      * @param layout The layout for the main page on the app
-     * @param theam the start scenary - 0 = forest, 1 = sea
-     * @param weather the start weather - 0 = cloudy, 1 = rainy, 2 = sunny
+     * @param context the apps context
      */
-    public BackgroundStyle(ImageView bgImageView, View layout, int theam, int weather){
+    public BackgroundStyle(Context context, ImageView bgImageView, View layout){
 
-        theamNames = new String[]{"Forest", "Beach"};
-
-        bgImages = new int[][]{{R.drawable.forest_cloudy, R.drawable.forest_rainy, R.drawable.forest_sunny},
-                {R.drawable.sea_cloudy, R.drawable.sea_rainy, R.drawable.sea_sunny}};
-
-        //position of each type in the array
-        forrest = 0;
-        sea = 1;
-        cloudy = 0;
-        rainy = 1;
-        sunny = 2;
-
-        //Stores the colours for each theam
-        //colours[0] = cloudy, colours[1] = rainy, colours[2] = sunny forest, colours[3] = sunny sea
-        colours = new String[]{"#54717A", "#57575D", "#47AB2F", "#4A90E2"};
-
-        this.theam = theam;
-
-        this.weather = weather;
-
-        sunnyOffSet = 1;
+        //Default starting values
+        this.currTheam = 0;
+        this.weather = 0;
 
         this.bgImageView = bgImageView;
 
         this.layout = layout;
 
+        this.context = context;
+
+        theamFileID = R.raw.theams;
+
+        createTheams(theamFileID);
+
         renderBG();
     }
 
+    /**
+     * sets the currTheam and then updates the background information
+     * @param theamID the id of the theam you want
+     */
     public void setTheam(int theamID){
 
-        if (theamID == 0){
-            useForest();
-        }else{
-            useSea();
-        }
-    }
-
-    /**
-     * Function to check if we are using sea theam
-     * @return true if we are currently using sea theam
-     */
-    private boolean isSea(){
-        if (theam == sea) {
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    /**
-     * Function to check if we are using sunny weather
-     * @return true if weather is set to sunny
-     */
-    private boolean isSunny(){
-        if (weather == sunny) {
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    /**
-     * rerenders using the sea theam
-     */
-    public void useSea(){
-        theam = sea;
+        currTheam = theamID;
         renderBG();
     }
 
     /**
-     * rerenders using the forest theam
+     * sets the current weather and then updates the bakground information
+     * @param weather the id of the weather that you want.
      */
-    public void useForest(){
-        theam = forrest;
+    public void setWeather(int weather){
+        this.weather = weather;
+
         renderBG();
     }
 
-    /**
-     * renders using the cloudy scene
-     */
-    public void setCloudy(){
-        weather = cloudy;
-        renderBG();
-    }
-
-    /**
-     * renders using the cloudy rainy
-     */
-    public void setRainy(){
-        weather = rainy;
-        renderBG();
-   }
-
-    /**
-     * renders using the sunny scene
-     */
-    public void setSunny(){
-        weather = sunny;
-        renderBG();
-    }
 
     /**
      * used to get the image id of the current image in use
      * @return image id of current image
      */
     public int getImageId(){
-        return bgImages[theam][weather];
+        return theams[currTheam].getImgId(this.weather);
     }
 
     /**
@@ -171,14 +97,8 @@ public class BackgroundStyle {
      * @return integer value of colour
      */
     public int getColour(){
-        int offset = 0;
-        // checks if sea theam and sunny weather
-        //if true we need to use one place forward in the array
-        if (isSea() && isSunny()){
-            offset = sunnyOffSet;
-        }
 
-        return Color.parseColor(colours[weather + offset]);
+        return theams[currTheam].getBgColour(this.weather);
     }
 
     /**
@@ -204,4 +124,26 @@ public class BackgroundStyle {
     public int getNumTheams(){
         return theamNames.length;
     }
+
+    /**
+     * innitializes all the theam information:
+     *          Theam array
+     *          theamNames array
+     * @param theamFileID Id of file to be used for theams
+     */
+    private void createTheams(int theamFileID){
+
+        FileReader reader = new FileReader(context);
+
+        ArrayList<String[]> theamList = reader.readFileToString(theamFileID);
+
+        theams = new Theam[theamList.size()];
+        theamNames = new String[theamList.size()];
+
+        for (int i = 0; i < theamList.size(); i++){
+            theams[i] = new Theam(this.context, theamList.get(i));
+            theamNames[i] = theams[i].getName();
+        }
+    }
+
 }
