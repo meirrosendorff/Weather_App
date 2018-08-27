@@ -1,4 +1,6 @@
 ##Fields are seperated by tabs theams are seperated by new lines, format is as follows:
 ##theam_name	cloudy_img	rainy_img	sunny_img	cloudy_colour	rainy_colour	sunny_colour
+##Make sure this uses the same order as the weatherSymbol file
+##leave off filetypes in image names
 Forest	forest_cloudy	forest_rainy	forest_sunny	#54717A	#57575D	#47AB2F
 Sea	sea_cloudy	sea_rainy	sea_sunny	#54717A	#57575D	#4A90E2

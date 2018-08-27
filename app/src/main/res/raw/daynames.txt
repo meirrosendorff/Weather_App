@@ -1,0 +1,3 @@
+#List days of the week starting at sunday
+#Days are seperated by tabs
+Sunday	Monday	Tuesday	Wednesday	Thursday	Friday	Saterday

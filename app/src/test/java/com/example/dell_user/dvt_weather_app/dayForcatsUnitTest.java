@@ -2,7 +2,6 @@ package com.example.dell_user.dvt_weather_app;
 
 import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
-import android.widget.ImageView;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +22,7 @@ public class dayForcatsUnitTest {
 
         ConstraintLayout myView = (ConstraintLayout) LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.template,null ,false);
 
-        dayForcast myForcast = new dayForcast(myView);
+        dayForcast myForcast = new dayForcast(RuntimeEnvironment.application, myView);
 
         String[] days = new String[]{"Sunday", "Monday", "Tuesday","Wednesday", "Thursday", "Friday", "Saterday"};
 
@@ -47,7 +46,7 @@ public class dayForcatsUnitTest {
 
         ConstraintLayout myView = (ConstraintLayout) LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.template,null ,false);
 
-        dayForcast myForcast = new dayForcast(myView);
+        dayForcast myForcast = new dayForcast(RuntimeEnvironment.application, myView);
 
         for (int i = -100; i <= 100; i+=50){
 
@@ -65,11 +64,10 @@ public class dayForcatsUnitTest {
 
         ConstraintLayout myView = (ConstraintLayout) LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.template,null ,false);
 
-        dayForcast myForcast = new dayForcast(myView);
+        dayForcast myForcast = new dayForcast(RuntimeEnvironment.application, myView);
 
-        myForcast.setSunny();
-
-
+        myForcast.setWeather(2);
+        
         assertEquals(R.drawable.clear3x, myForcast.getSymbolTag());
 
     }
@@ -82,10 +80,9 @@ public class dayForcatsUnitTest {
 
         ConstraintLayout myView = (ConstraintLayout) LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.template,null ,false);
 
+        dayForcast myForcast = new dayForcast(RuntimeEnvironment.application, myView);
 
-        dayForcast myForcast = new dayForcast(myView);
-
-        myForcast.setCloudy();
+        myForcast.setWeather(0);
 
         assertEquals(R.drawable.partlysunny3x, myForcast.getSymbolTag());
 
@@ -99,12 +96,9 @@ public class dayForcatsUnitTest {
 
         ConstraintLayout myView = (ConstraintLayout) LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.template,null ,false);
 
+        dayForcast myForcast = new dayForcast(RuntimeEnvironment.application, myView);
 
-        dayForcast myForcast = new dayForcast(myView);
-
-        myForcast.setRainy();
-
-        ImageView myImageView = (ImageView) myView.getViewById(R.id.symbol);
+        myForcast.setWeather(1);
 
         assertEquals(R.drawable.rain3x, myForcast.getSymbolTag());
 

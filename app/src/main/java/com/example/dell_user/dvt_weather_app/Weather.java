@@ -37,19 +37,13 @@ public class Weather extends AppCompatActivity {
         dayForcast[] nextWeek = new dayForcast[20];
 
         for (int i = 0; i<20; i++){
-            nextWeek[i] = new dayForcast((ConstraintLayout) inflater.inflate(R.layout.template, mainLayout, false));
+            nextWeek[i] = new dayForcast(this, (ConstraintLayout) inflater.inflate(R.layout.template, mainLayout, false));
             mainLayout.addView(nextWeek[i].getLayout());
 
             nextWeek[i].setTemperature(i);
             nextWeek[i].setDay(i%7);
 
-            if(i%3 == 0){
-                nextWeek[i].setCloudy();
-            }else if(i%3 == 1){
-                nextWeek[i].setRainy();
-            }else{
-                nextWeek[i].setSunny();
-            }
+            nextWeek[i].setWeather(i%3);
 
 
         }

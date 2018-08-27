@@ -1,0 +1,5 @@
+#contains the list of symbols for each weather typer
+#use the same order here for symbols as you did for theams
+#i.e. if the first weather type in theams is cloudy make sure the first symbol here is cloudy
+#each symbolname must be seperated by tabs, leave off the file type
+partlysunny3x	rain3x	clear3x

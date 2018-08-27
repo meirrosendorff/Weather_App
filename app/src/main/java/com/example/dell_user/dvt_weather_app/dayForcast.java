@@ -1,5 +1,6 @@
 package com.example.dell_user.dvt_weather_app;
 
+import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,17 +24,21 @@ public class dayForcast {
     private ImageView symbol;
 
     //Contains the names of the days of the week
-    //starting with dayNames[0] = Sunday, ... , dayNames[6] = Saterday
+    //starting with daynames[0] = Sunday, ... , daynames[6] = Saterday
     private String[] dayNames;
 
     //Contains the IDs of each symbol type
     //symbolSet[0] = cloudy, symbolSet[1] = rainy, symbolSet[2] = sunny
     private int[] symbolSet;
 
-    //position of each type in the array
-    private final int cloudy;
-    private final int rainy;
-    private final int sunny;
+    //The apss context
+    Context context;
+
+    //File that contains dayNames
+    int dayNamesFileID;
+
+    //File that contains symbol image details
+    int symbolsFileID;
 
     /**
      * Constructor fo rthe class
@@ -42,19 +47,16 @@ public class dayForcast {
      *              a textView named day
      *              a ImageView named symbol
      */
-    public dayForcast(ConstraintLayout layout){
+    public dayForcast(Context context, ConstraintLayout layout){
 
-        //position of each type in the array
-        cloudy = 0;
-        rainy = 1;
-        sunny = 2;
+        this.context = context;
 
+        dayNamesFileID = R.raw.daynames;
+        symbolsFileID = R.raw.weathersymbols;
 
-        symbolSet = new int[]{R.drawable.partlysunny3x, R.drawable.rain3x ,R.drawable.clear3x};
+        innitDayNames(dayNamesFileID);
 
-
-
-        dayNames = new String[]{"Sunday", "Monday", "Tuesday","Wednesday", "Thursday", "Friday", "Saterday"};
+        innitSymbolSet(symbolsFileID);
 
         this.layout = layout;
 
@@ -99,35 +101,15 @@ public class dayForcast {
         return (String)temperature.getText();
     }
 
-    /**
-     * Sets the symbol for sunny
-     * Sets the tag so that later we can check that it is correct
-     */
-    public void setSunny(){
-
-        symbol.setImageResource(symbolSet[sunny]);
-        symbol.setTag(symbolSet[sunny]);
+    public void setWeather(int weatherType){
+        symbol.setImageResource(symbolSet[weatherType]);
+        symbol.setTag(symbolSet[weatherType]);
     }
 
     /**
-     * Sets the symbol for cloudy
-     * Sets the tag so that later we can check that it is correct
+     * gets the tag of the symbol imageView inorder to know which symbol is in use
+     * @return the id of the symbols image in use
      */
-    public void setCloudy(){
-        symbol.setImageResource(symbolSet[cloudy]);
-        symbol.setTag(symbolSet[cloudy]);
-    }
-
-    /**
-     * sets the symbol for rainy
-     * Sets the tag so that later we can check that it is correct
-     */
-    public void setRainy(){
-
-        symbol.setImageResource(symbolSet[rainy]);
-        symbol.setTag(symbolSet[rainy]);
-    }
-
     public int getSymbolTag(){
         return (int)symbol.getTag();
     }
@@ -138,6 +120,35 @@ public class dayForcast {
      */
     public ConstraintLayout getLayout(){
         return layout;
+    }
+
+    /**
+     * Innitializez the day names array using the file named in fileID
+     * @param fileID, file id of file used
+     */
+    private void innitDayNames(int fileID){
+
+        FileReader reader = new FileReader(context);
+
+        dayNames = reader.readFileToString(fileID).get(0);
+
+    }
+
+    /**
+     * Innitializes the symbolSet array from file
+     * Converts the string in the file into id numbers
+     * @param fileID, the file to be used to set symbolSet
+     */
+    private void innitSymbolSet(int fileID){
+        FileReader reader = new FileReader(context);
+
+        String[] sourceFiles = reader.readFileToString(fileID).get(0);
+
+        symbolSet = new int[sourceFiles.length];
+
+        for (int i = 0; i < sourceFiles.length; i++){
+            symbolSet[i] = context.getResources().getIdentifier(sourceFiles[i], "drawable", context.getPackageName());
+        }
     }
 
 }
