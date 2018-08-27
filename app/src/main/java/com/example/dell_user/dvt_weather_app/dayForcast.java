@@ -77,6 +77,14 @@ public class dayForcast {
     }
 
     /**
+     * Allows to set a date into the day rather than a day of the week
+     * @param date, String containing the date.
+     */
+    public void setDate(String date){
+
+        this.day.setText(date);
+    }
+    /**
      * Gets the day of the week currently set in the text field
      * @return day of week
      */
