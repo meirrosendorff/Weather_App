@@ -356,6 +356,23 @@ public class weatherReport {
     }
 
     /**
+     * gets the image id of the image representing theam
+     * @param theam theam id
+     * @return image id
+     */
+    public int getTheamPicImageID(int theam){
+        return background.getTheamPicImageID(theam);
+    }
+
+    /**
+     * gets the number of theams in use
+     * @return number of theams
+     */
+    public int getNumTheams(){
+        return background.getNumTheams();
+    }
+
+    /**
      * Convert a weather ID code from the OpenWeatherMap API
      * into the code we use here
      * @param apiId - the ID comming from the api

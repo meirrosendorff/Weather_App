@@ -20,6 +20,8 @@ public class Theam {
     //Background colours for each image
     private int[] bgColours;
 
+    //id for pic representing theam
+    int theamPicId;
     /**
      * Constructor for class
      * @param context main activities context
@@ -33,9 +35,16 @@ public class Theam {
 
         this.context = context;
 
+        //use the sunny pic
+        theamPicId = 2;
+
         //parses the theam array to set parameters
         setTheamParameters(theam);
 
+    }
+
+    public int getTheamPic(){
+        return imgs[theamPicId];
     }
 
     /**

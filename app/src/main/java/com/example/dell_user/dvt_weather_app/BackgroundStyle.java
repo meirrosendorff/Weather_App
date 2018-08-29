@@ -140,6 +140,10 @@ public class BackgroundStyle {
         return theamNames.length;
     }
 
+    public int getTheamPicImageID(int theam){
+        return theams[theam].getTheamPic();
+    }
+
     /**
      * innitializes all the theam information:
      *          Theam array

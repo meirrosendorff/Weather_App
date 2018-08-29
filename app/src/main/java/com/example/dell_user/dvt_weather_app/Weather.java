@@ -11,6 +11,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageButton;
 
 public class Weather extends AppCompatActivity {
 
@@ -34,6 +36,25 @@ public class Weather extends AppCompatActivity {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         setReportLocation();
+
+        //If we want to change the theam
+        final ImageButton changeTheamButton = (ImageButton) findViewById(R.id.theamButton);
+
+        changeTheamButton.setOnClickListener(new ImageButton.OnClickListener() {
+            public void onClick(View v) {
+                //move onto the next theam number
+                int currTheam = report.getTheam();
+                int numTheams = report.getNumTheams();
+                int newTheam = (currTheam + 1)%numTheams;
+                int nextTheam = (newTheam + 1)%numTheams;
+                //set the weather reports theam
+                report.setTheam(newTheam);
+
+                //change the image in the button to the next theam
+                changeTheamButton.setImageResource(report.getTheamPicImageID(nextTheam));
+
+            }
+        });
 
     }
 
