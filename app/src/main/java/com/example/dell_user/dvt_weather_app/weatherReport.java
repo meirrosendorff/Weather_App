@@ -39,6 +39,7 @@ public class weatherReport {
     private TextView mainMin;
     private TextView mainMax;
     private TextView mainCurr;
+    private TextView cityName;
 
     //Number of days in the week
     private int daysInWeek;
@@ -57,6 +58,7 @@ public class weatherReport {
     private final int rainy;
     private final int sunny;
 
+    private String city;
     /**
      * Constructor for class
      * @param context, context of main activity
@@ -89,6 +91,8 @@ public class weatherReport {
 
         daysInWeek = 7;
 
+        city = "";
+
         //innitialize all textViews for current weather info
         innitTextViews();
 
@@ -111,6 +115,7 @@ public class weatherReport {
         mainMin = (TextView) mainLayout.findViewById((R.id.mainMin));
         mainMax = (TextView) mainLayout.findViewById((R.id.mainMax));
         mainCurr = (TextView) mainLayout.findViewById((R.id.mainCurr));
+        cityName = (TextView) mainLayout.findViewById(R.id.cityName);
 
     }
 
@@ -280,6 +285,14 @@ public class weatherReport {
     }
 
     /**
+     * Sets the city variable
+     * @param city city name
+     */
+    private void setCity(String city){
+        this.city = city;
+        cityName.setText(this.city);
+    }
+    /**
      * updates all the weather
      */
     public void updateWeather(){
@@ -333,8 +346,9 @@ public class weatherReport {
     private void setWeathers(){
 
         weatherSetter.placeIdTask asyncTask = new weatherSetter.placeIdTask(new weatherSetter.AsyncResponse() {
-            public void processFinish(String temp, String min, String max, String descriptionID, ArrayList<int[]> futureArr) {
+            public void processFinish(String temp, String min, String max, String descriptionID, String cityName, ArrayList<int[]> futureArr) {
                 setMainWeatherInfo(temp, min, max, descriptionID);
+                setCity(cityName);
                 setDayForcasts(futureArr);
             }
         });

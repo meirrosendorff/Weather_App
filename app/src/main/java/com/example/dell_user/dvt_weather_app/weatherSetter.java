@@ -37,7 +37,7 @@ public class weatherSetter {
 
     public interface AsyncResponse {
 
-        void processFinish(String output1, String output2, String output3, String output4, ArrayList<int[]> arrOut);
+        void processFinish(String output1, String output2, String output3, String output4, String output5, ArrayList<int[]> arrOut);
     }
 
 
@@ -76,7 +76,8 @@ public class weatherSetter {
                     String temperature = main.getInt("temp")+ "°";
                     String min = main.getInt("temp_min")+ "°";
                     String max = main.getInt("temp_max")+ "°";
-
+                    //JSONObject cityObj = main.getJSONObject("city");
+                    String city = jsonArr[0].getString("name");
                     ArrayList<int[]> forecast = null;
 
                     if(jsonArr[1] != null){//if the future forcast worked
@@ -140,7 +141,7 @@ public class weatherSetter {
                         while(forecast.size() > 5) forecast.remove(0);
                     }
 
-                    delegate.processFinish(temperature, min, max, descriptionID, forecast);
+                    delegate.processFinish(temperature, min, max, descriptionID, city, forecast);
 
                 }
             } catch (JSONException e) {
