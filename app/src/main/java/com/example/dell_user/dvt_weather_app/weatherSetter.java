@@ -76,8 +76,9 @@ public class weatherSetter {
                     String temperature = main.getInt("temp")+ "°";
                     String min = main.getInt("temp_min")+ "°";
                     String max = main.getInt("temp_max")+ "°";
-                    //JSONObject cityObj = main.getJSONObject("city");
-                    String city = jsonArr[0].getString("name");
+                    JSONObject sys = jsonArr[0].getJSONObject("sys");
+                    String city = jsonArr[0].getString("name") + ", " + sys.getString("country");
+
                     ArrayList<int[]> forecast = null;
 
                     if(jsonArr[1] != null){//if the future forcast worked
