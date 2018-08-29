@@ -85,65 +85,55 @@ public class weatherSetter {
 
                         JSONArray list = jsonArr[1].getJSONArray("list");
 
-                        //Had to do this in order to overcome bug where there wasnt always a 12:00:000
-                        //on the last day so I could not just use the temperature at 12:00:00 as the
-                        //predicted time
-                        //I instead use 12 when it is avaialable and use the closest time to 12 when it is not
-                        //Probably not the most elegant solution but it works.
-                        int currDay = 0;
+                        //The best way I found to represent the weather for the forcast based
+                        //off the 3 hourly forcast given was to display the maximum for each day
+                        JSONObject curr = list.getJSONObject(0);
 
-                        //This holds an arrayList for each day which holds the predictions for that day
-                        ArrayList<ArrayList<int[]>> myList = new ArrayList<ArrayList<int[]>>();
+                        //Read in the first of the 3 hourly reports
+                        details = curr.getJSONArray("weather").getJSONObject(0);
+                        main = curr.getJSONObject("main");
+                        int[] MaxTemp = new int[]{main.getInt("temp"), details.getInt("id")};
+                        String currDate = curr.getString("dt_txt").split(" ")[0];
 
-                        //When this is true it keeps adding to the days list of predictions
-                        boolean keepAdding = true;
-
-                        //iterates over all JSON objects containing predictions
+                        //iterates over each three hourly report
                         for (int i = 1; i < list.length(); i++){
 
-
-                            JSONObject curr = list.getJSONObject(i);
+                            curr = list.getJSONObject(i);
 
                             //The date and time of the forcast in curr
                             String date = curr.getString("dt_txt");
-                            String[] dateTime = date.split(" ");
+                            date = date.split(" ")[0];
 
-                            //gets rid of - and : so we can convert date and time to integers
-                            dateTime[0]= dateTime[0].replace("-", "");
-                            dateTime[1] = dateTime[1].replace(":", "");
+                            //If the date changes
+                            if(!currDate.equals(date)){
+                                //reset the date
+                                currDate = date;
 
-                            if (currDay != Integer.parseInt(dateTime[0])){ //if the day has changed
+                                //add the current max temperature to forcasts
+                                forecast.add(new int[]{MaxTemp[0], MaxTemp[1]});
 
-                                currDay = Integer.parseInt(dateTime[0]); //set the currDay to today
-                                keepAdding = true; //tell it to start adding
-                                myList.add(new ArrayList<int[]>()); //create a new entry on list
-                            }
-
-                            if (keepAdding){ //if we must keep adding add the prediction
-
+                                //set the max temperature to the current forcast
                                 details = curr.getJSONArray("weather").getJSONObject(0);
                                 main = curr.getJSONObject("main");
 
+                                MaxTemp = new int[]{main.getInt("temp"), details.getInt("id")};
+
+                            }else{//if the date doesnt change
+
+                                details = curr.getJSONArray("weather").getJSONObject(0);
+                                main = curr.getJSONObject("main");
                                 int[] temp = new int[]{main.getInt("temp"), details.getInt("id")};
 
-                                myList.get(myList.size() -1).add(temp);
+                                //if the current forcasts temperature is higher than the max
+                                //set the max to be that
+                                if(MaxTemp[0] < temp[0]){
+                                    MaxTemp = temp;
+                                }
                             }
-
-                            //when you reach 12:00:00 stop adding
-                            if(date.endsWith("12:00:00")){
-                                keepAdding = false;
-                            }
-
                         }
 
-                        //go through each of the arrayLists in myList and take the last option
-                        // (the closest prediction to 12:00:00)
-                        for(int i = 0; i < myList.size() -1; i++ ){
-                            if(myList.get(i).size() > 0){
-                                forecast.add(myList.get(i).get(myList.get(i).size() -1));
-                            }
-
-                        }
+                        //add the last day to forecasts
+                        forecast.add(new int[]{MaxTemp[0], MaxTemp[1]});
 
                         //If the list is larger than 5 it means it includes todays prediction
                         //delete the first entry
