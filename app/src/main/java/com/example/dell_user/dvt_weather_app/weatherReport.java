@@ -155,6 +155,13 @@ public class weatherReport {
     }
 
     /**
+     * getter for the current theam
+     * @return current theam
+     */
+    public int getTheam(){
+        return background.getTheam();
+    }
+    /**
      * Set the location of the weatherReport and updates the weather accordingly
      * @param lat - latitude
      * @param lon - longitude
@@ -183,20 +190,32 @@ public class weatherReport {
     private void setDaysOfWeek(){
 
         Calendar calendar = Calendar.getInstance();
-        int today = calendar.get(Calendar.DAY_OF_WEEK);
+        int tomorrow = calendar.get(Calendar.DAY_OF_WEEK);  //return a number from 1 - 7
+                                                            //since our array starts from 0
+                                                            //getting the current day gives us tomorrow
 
         for(int i = 0; i < numDaysForward; i++){
 
-            futureForcasts[i].setDay((today + i)%daysInWeek);
+            futureForcasts[i].setDay((tomorrow + i)%daysInWeek);
         }
 
+    }
+
+    /**
+     * gets the dayForcast object for dayID
+     * @param dayID - id of day forcast
+     * @return dayForcast object for that day
+     */
+    public dayForcast getDayForecast(int dayID){
+
+        return futureForcasts[dayID];
     }
 
     /**
      * Sets the current temperature and updates relevant textboxes
      * @param temp - current temperature
      */
-    public void setMainTemp(String temp){
+    private void setMainTemp(String temp){
 
         mainTemp.setText(temp);
         mainCurr.setText(temp);
@@ -206,7 +225,7 @@ public class weatherReport {
      * sets the current days minimum temperature
      * @param temp - minimum temperature
      */
-    public void setMainMin(String temp){
+    private void setMainMin(String temp){
 
         mainMin.setText(temp);
     }
@@ -215,16 +234,17 @@ public class weatherReport {
      * sets the current days maximum temperature
      * @param temp - maximum temperature
      */
-    public void setMainMax(String temp){
+    private void setMainMax(String temp){
 
         mainMax.setText(temp);
     }
 
     /**
      * Sets the days weather description type
+     * Sets the weather in bakground as well as the weatherType text
      * @param weather - the ID of the description
      */
-    public void setMainWeatherType(int weather){
+    private void setMainWeatherType(int weather){
 
         //returns the correct id of the weather description input
         int weatherType = getWeatherId(weather);
@@ -241,7 +261,7 @@ public class weatherReport {
      *                    arr[0] = temperature
      *                    arr[1] = weather description ID
      */
-    private void setDayForcasts(ArrayList<int[]> futureArr){
+    public void setDayForcasts(ArrayList<int[]> futureArr){
 
         //return if there arent enough 2D arrays for each
         //dayForcast
@@ -268,6 +288,43 @@ public class weatherReport {
         setDaysOfWeek();
     }
 
+    /**
+     * Sets Todays weather info
+     * @param temp - current temperature
+     * @param min - todays min
+     * @param max - todays max
+     * @param descriptionID - todays weather Type
+     */
+    public void setMainWeatherInfo(String temp, String min, String max, String descriptionID){
+        setMainTemp(temp);
+        setMainMin(min);
+        setMainMax(max);
+        setMainWeatherType(Integer.parseInt(descriptionID));
+    }
+
+    /**
+     * creates a string array containing the content of the textboxes:
+     *                      mainTemp
+     *                      mainMin
+     *                      mainMax
+     *                      mainWeatherType
+     * @return the string array with:
+     *                      arr[0] = mainTemp
+     *                      arr[1] = mainMin
+     *                      arr[2] = mainMax
+     *                      arr[3] = mainWeatherType
+     */
+    public String[] getMainWeatherInfo(){
+
+        String temp = mainTemp.getText().toString();
+        String min = mainMin.getText().toString();
+        String max = mainMax.getText().toString();
+        String type = mainWeatherType.getText().toString();
+
+        String[] output = new String[]{temp, min, max, type};
+
+        return output;
+    }
 
     /**
      * sets the weather in each dayForcast in the futureForcasts array
@@ -277,11 +334,7 @@ public class weatherReport {
 
         weatherSetter.placeIdTask asyncTask = new weatherSetter.placeIdTask(new weatherSetter.AsyncResponse() {
             public void processFinish(String temp, String min, String max, String descriptionID, ArrayList<int[]> futureArr) {
-
-                setMainTemp(temp);
-                setMainMin(min);
-                setMainMax(max);
-                setMainWeatherType(Integer.parseInt(descriptionID));
+                setMainWeatherInfo(temp, min, max, descriptionID);
                 setDayForcasts(futureArr);
             }
         });

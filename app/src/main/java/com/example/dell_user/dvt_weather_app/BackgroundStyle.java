@@ -83,6 +83,21 @@ public class BackgroundStyle {
         renderBG();
     }
 
+    /**
+     * getter for the theam
+     * @return theamid
+     */
+    public int getTheam(){
+        return currTheam;
+    }
+
+    /**
+     * getter for the weather
+     * @return weather ID
+     */
+    public int getWeather(){
+        return weather;
+    }
 
     /**
      * used to get the image id of the current image in use
