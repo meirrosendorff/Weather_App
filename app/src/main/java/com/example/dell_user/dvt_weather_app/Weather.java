@@ -5,6 +5,11 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
+
+import com.google.android.gms.location.LocationListener;
+
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -78,15 +83,14 @@ public class Weather extends AppCompatActivity {
             }
         });
 
-        //button to open the dialog box for xhnaging countries
+        //button to open the dialog box for chnaging countries
         changeLocationButton = (Button) findViewById(R.id.changeLocationButton);
 
-        changeLocationButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick(View v){
+        changeLocationButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 countryChoiceDialog.show();
             }
         });
-
 
 
     }
@@ -95,13 +99,13 @@ public class Weather extends AppCompatActivity {
      * Changes the change theam imageButton to the next country
      * and changes the theam
      */
-    private void changeToNextTheam(){
+    private void changeToNextTheam() {
 
         //move onto the next theam number
         int currTheam = report.getTheam();
         int numTheams = report.getNumTheams();
-        int newTheam = (currTheam + 1)%numTheams;
-        int nextTheam = (newTheam + 1)%numTheams;
+        int newTheam = (currTheam + 1) % numTheams;
+        int nextTheam = (newTheam + 1) % numTheams;
 
         //set the weather reports theam
         report.setTheam(newTheam);
@@ -111,7 +115,7 @@ public class Weather extends AppCompatActivity {
     }
 
     //creates the radio dialog to be used for selecting countries
-    private void createRadioDialogForCountryNames(){
+    private void createRadioDialogForCountryNames() {
 
         countryChoiceDialog = new Dialog(context);
         countryChoiceDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -127,8 +131,8 @@ public class Weather extends AppCompatActivity {
         RadioGroup rg = (RadioGroup) countryChoiceDialog.findViewById(R.id.radio_group);
 
         //creates a radio button for each country
-        for(int i=0;i<countryNames.size();i++){
-            RadioButton rb=new RadioButton(context); // dynamically creating RadioButton and adding to RadioGroup.
+        for (int i = 0; i < countryNames.size(); i++) {
+            RadioButton rb = new RadioButton(context); // dynamically creating RadioButton and adding to RadioGroup.
             rb.setText(countryNames.get(i)[0]);
             rg.addView(rb);
         }
@@ -148,7 +152,7 @@ public class Weather extends AppCompatActivity {
      * @param group - radioButtonGroup
      * @param checkedId - id of the button clicked
      */
-    public void updateLocationOnChangedRadioButton(RadioGroup group, int checkedId){
+    public void updateLocationOnChangedRadioButton(RadioGroup group, int checkedId) {
         int childCount = group.getChildCount();
 
         //iterates over each child
@@ -156,10 +160,10 @@ public class Weather extends AppCompatActivity {
             RadioButton btn = (RadioButton) group.getChildAt(i);
             if (btn.getId() == checkedId) {//If this is the button that is checked
 
-                if(i == 0){//if its the current location
+                if (i == 0) {//if its the current location
                     currentLocation = true;
                     report.setUseInputCityName(true);
-                }else{
+                } else {
                     currentLocation = false;
                     report.setUseInputCityName(false);
                     report.setCity((String) btn.getText());
@@ -176,29 +180,70 @@ public class Weather extends AppCompatActivity {
     /**
      * Sets the reports correct location
      */
-    public void setReportLocation(){
+    public void setReportLocation() {
 
-        if (currentLocation){
+        if (currentLocation) {
             //if I have permissions to access location
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
                             PackageManager.PERMISSION_GRANTED) {
                 //Get current latitude and longitude
-                double lon = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
-                double lat = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
-                report.setLocation(lat, lon);
+                getAndSetGPSLocation();
             } else {
                 //Ask for permission
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             }
-        }else{
+        } else {
             //Get the location from my country list
             double lat = Double.parseDouble(countryNames.get(currentCountry)[1]);
             double lon = Double.parseDouble(countryNames.get(currentCountry)[2]);
             report.setLocation(lat, lon);
         }
 
+    }
+
+    /**
+     * sets the location using the GPS
+     */
+    public void getAndSetGPSLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location != null) {//if iit got the location
+            double lon = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
+            double lat = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
+            report.setLocation(lat, lon);
+        } else {//If it didnt get a last known location, request a new one.
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, new android.location.LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+
+                    //Remove the listener so it doesnt keep requesting
+                    locationManager.removeUpdates(this);
+                    report.setLocation(location.getLatitude(), location.getLongitude());
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            });
+        }
     }
 
     /**
@@ -214,9 +259,7 @@ public class Weather extends AppCompatActivity {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                double lon = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
-                double lat = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
-                report.setLocation(lat, lon);
+                getAndSetGPSLocation();
             }
         }
     }
