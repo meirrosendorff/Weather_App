@@ -58,7 +58,13 @@ public class weatherReport {
     private final int rainy;
     private final int sunny;
 
+    //City name
     private String city;
+
+    //boolean, if true use the city name from the weatherAPI
+    //Otherwise use the city name thats currently set
+    private boolean useInputCityName;
+
     /**
      * Constructor for class
      * @param context, context of main activity
@@ -85,6 +91,8 @@ public class weatherReport {
                 (ImageView) layout.findViewById(R.id.screenBackground),
                 layout.findViewById(R.id.mainScreenLayout));
 
+        //Defaults to using city name from API
+        useInputCityName = true;
 
         //Default to 5 days forwward
         numDaysForward = 5;
@@ -285,10 +293,18 @@ public class weatherReport {
     }
 
     /**
+     * Sets weather or not we must use the city name from the API
+     * @param useInputCityName if true use API city name
+     */
+    public void setUseInputCityName(boolean useInputCityName){
+        this.useInputCityName = useInputCityName;
+    }
+
+    /**
      * Sets the city variable
      * @param city city name
      */
-    private void setCity(String city){
+    public void setCity(String city){
         this.city = city;
         cityName.setText(this.city);
     }
@@ -348,7 +364,10 @@ public class weatherReport {
         weatherSetter.placeIdTask asyncTask = new weatherSetter.placeIdTask(new weatherSetter.AsyncResponse() {
             public void processFinish(String temp, String min, String max, String descriptionID, String cityName, ArrayList<int[]> futureArr) {
                 setMainWeatherInfo(temp, min, max, descriptionID);
-                setCity(cityName);
+                if(useInputCityName){ //only set it if this is the name we want to use
+                    setCity(cityName);
+                }
+
                 setDayForcasts(futureArr);
             }
         });
